@@ -1,0 +1,28 @@
+package tek.framework.steps;
+
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import tek.framework.utility.SeleniumUtilities;
+
+public class Hooks extends SeleniumUtilities {
+
+    @Before
+    public void beforeScenarios() {
+        //We need to open browser and navigate
+        setupBrowser();
+    }
+
+    @After
+    public void afterScenarios(Scenario scenario) {
+        if ((scenario.isFailed())) {
+            TakesScreenshot takesScreenshot = (TakesScreenshot) getDriver();
+            byte[] screenshot = takesScreenshot.getScreenshotAs(OutputType.BYTES);
+            scenario.attach(screenshot, "image/png","screenshot");
+        }
+            //quit driver
+            quitBrowser();
+    }
+}
